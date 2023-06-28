@@ -1,6 +1,7 @@
 {
   "name": "store",
   "scripts": {
-    "dev": "pnpm --recursive --parallel --stream run dev"
+    "dev": "pnpm --recursive --parallel --stream run dev",
+    "lint": "pnpm --recursive --parallel --stream run lint"
   }
 }
