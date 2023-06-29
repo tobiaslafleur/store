@@ -1,3 +1,4 @@
+import { APIError } from '@/utils/error';
 import { RequestHandler } from 'express';
 import { ZodError, ZodSchema } from 'zod';
 
@@ -41,7 +42,10 @@ export const validateRequest: <TParams, TQuery, TBody>(schemas: {
     }
 
     if (errorList.length >= 1) {
-      throw new Error(errorsToString(errorList));
+      throw new APIError({
+        code: 'BAD_REQUEST',
+        message: errorsToString(errorList),
+      });
     }
 
     return next();

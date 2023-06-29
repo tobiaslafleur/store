@@ -2,6 +2,7 @@ import express, { Express } from 'express';
 import cors from 'cors';
 import { validateRequest } from '@/utils/validateRequest';
 import { z } from 'zod';
+import { errorHandler, notFoundHandler } from '@/utils/error';
 
 export const buildServer: () => Express = () => {
   const app = express();
@@ -21,6 +22,9 @@ export const buildServer: () => Express = () => {
       return res.status(200).send(req.body);
     }
   );
+
+  app.use(errorHandler);
+  app.use(notFoundHandler);
 
   return app;
 };
