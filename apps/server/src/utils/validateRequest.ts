@@ -2,14 +2,15 @@ import { APIError } from '@/utils/error';
 import { RequestHandler } from 'express';
 import { ZodError, ZodSchema } from 'zod';
 
-export const validateRequest: <TParams, TQuery, TBody>(schemas: {
+export function validateRequest<TParams, TQuery, TBody>(schemas: {
   params?: ZodSchema<TParams>;
   query?: ZodSchema<TQuery>;
   body?: ZodSchema<TBody>;
-}) => RequestHandler<TParams, any, TBody, TQuery> =
-  ({ body, query, params }) =>
-  (req, res, next) => {
+}): RequestHandler<TParams, any, TBody, TQuery> {
+  return (req, res, next) => {
     const errorList = Array<ZodError>();
+
+    const { body, params, query } = schemas;
 
     if (body) {
       const parsed = body.safeParse(req.body);
@@ -50,10 +51,10 @@ export const validateRequest: <TParams, TQuery, TBody>(schemas: {
 
     return next();
   };
-
-const errorsToString = (errors: Array<ZodError>) => {
+}
+function errorsToString(errors: Array<ZodError>) {
   const issues = errors.map((error) => error.issues).flat();
   const message = issues.map((issue) => issue.message).join(', ');
 
   return message;
-};
+}

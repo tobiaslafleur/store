@@ -28,12 +28,12 @@ export class APIError extends Error {
   }
 }
 
-export const errorHandler = (
+export function errorHandler(
   error: Error,
   request: Request,
   response: Response,
   next: NextFunction
-) => {
+) {
   if (error instanceof APIError) {
     return response.status(error.statusCode).send({
       statusCode: error.statusCode,
@@ -49,13 +49,13 @@ export const errorHandler = (
     error: API_ERROR_MESSAGE['INTERNAL_SERVER_ERROR'],
     message: 'Something went wrong',
   });
-};
+}
 
-export const notFoundHandler = (request: Request, response: Response) => {
+export function notFoundHandler(request: Request, response: Response) {
   return response.status(API_ERROR_HTTP_CODE['NOT_FOUND']).send({
     statusCode: API_ERROR_HTTP_CODE['NOT_FOUND'],
     code: 'NOT_FOUND',
     error: API_ERROR_MESSAGE['NOT_FOUND'],
     message: 'Resource not found',
   });
-};
+}

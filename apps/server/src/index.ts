@@ -1,17 +1,13 @@
 import 'dotenv/config';
-
-import { connectToPostgres } from '@/utils/db';
 import { buildServer } from '@/utils/server';
 import { env } from '@/utils/env';
 
-const main = async () => {
+async function main() {
   const app = buildServer();
 
-  await connectToPostgres();
-
-  app.listen(env.PORT).on('error', () => {
+  app.listen(env.PORT).on('error', function () {
     process.exit(1);
   });
-};
+}
 
 main();
