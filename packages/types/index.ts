@@ -13,9 +13,5 @@ export type User = {
   role: UserRoles;
 };
 
-export type PartialUser = Omit<User, 'id'> & {
-  confirm_password: string;
-};
-
 export const USER_ROLES = ['USER', 'ADMIN'] as const;
 export type UserRoles = (typeof USER_ROLES)[number];

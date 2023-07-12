@@ -6,13 +6,12 @@ type Queries = {
     createUser: 'createUser';
     getUserByEmail: 'getUserByEmail';
     getUserById: 'getUserById';
-    checkIfUserExists: 'checkIfUserExists';
   };
 };
 
-export function loadQuery<T extends keyof Queries>(
+export function loadQuery<T extends keyof Queries, Y extends keyof Queries[T]>(
   folder: T,
-  file: keyof Queries[T] & string
+  file: Y & string
 ) {
   const sql = fs
     .readFileSync(

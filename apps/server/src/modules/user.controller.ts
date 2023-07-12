@@ -16,6 +16,8 @@ export async function createUserHandler(
 
     response.status(201).send({ ...rest });
   } catch (error: any) {
+    console.log(error);
+
     if (error instanceof APIError) {
       return next(error);
     }
