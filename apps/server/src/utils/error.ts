@@ -1,16 +1,22 @@
 import { NextFunction, Request, Response } from 'express';
 
-type API_ERROR_CODE = 'BAD_REQUEST' | 'NOT_FOUND' | 'INTERNAL_SERVER_ERROR';
+type API_ERROR_CODE =
+  | 'BAD_REQUEST'
+  | 'NOT_FOUND'
+  | 'CONFLICT'
+  | 'INTERNAL_SERVER_ERROR';
 
 const API_ERROR_HTTP_CODE: Record<API_ERROR_CODE, number> = {
   BAD_REQUEST: 400,
   NOT_FOUND: 404,
+  CONFLICT: 409,
   INTERNAL_SERVER_ERROR: 500,
 } as const;
 
 const API_ERROR_MESSAGE: Record<API_ERROR_CODE, string> = {
   BAD_REQUEST: 'Bad request',
   NOT_FOUND: 'Not found',
+  CONFLICT: 'Conflict',
   INTERNAL_SERVER_ERROR: 'Internal server error',
 } as const;
 

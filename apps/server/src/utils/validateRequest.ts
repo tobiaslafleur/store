@@ -52,6 +52,7 @@ export function validateRequest<TParams, TQuery, TBody>(schemas: {
     return next();
   };
 }
+
 function errorsToString(errors: Array<ZodError>) {
   const issues = errors.map((error) => error.issues).flat();
   const message = issues.map((issue) => issue.message).join(', ');
