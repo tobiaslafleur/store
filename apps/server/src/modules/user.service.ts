@@ -1,5 +1,5 @@
 import * as db from '@/db';
-import { getQueryString } from '@/db/utils';
+import { loadQuery } from '@/db/loadQuery';
 import { APIError } from '@/utils/error';
 import { PartialUser, User } from '@store/types';
 import { v4 as uuidv4, validate } from 'uuid';
@@ -8,7 +8,7 @@ export async function createUser(data: PartialUser) {
   const insertedId = uuidv4();
 
   const res = await db.query<{ count: number }>({
-    sql: getQueryString({ folderPath: 'user', fileName: 'checkIfUserExists' }),
+    sql: loadQuery('user', 'checkIfUserExists'),
     values: [data.email],
   });
 
@@ -20,7 +20,7 @@ export async function createUser(data: PartialUser) {
   }
 
   await db.query({
-    sql: getQueryString({ folderPath: 'user', fileName: 'createUser' }),
+    sql: loadQuery('user', 'createUser'),
     values: [
       insertedId,
       data.email,
@@ -49,7 +49,7 @@ export async function getUserById(id: string) {
   }
 
   const user = await db.query<User>({
-    sql: getQueryString({ folderPath: 'user', fileName: 'getUserById' }),
+    sql: loadQuery('user', 'getUserById'),
     values: [id],
   });
 
