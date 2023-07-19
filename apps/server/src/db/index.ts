@@ -31,5 +31,5 @@ const pool = mysql.createPool({
 
 export async function query<T, K = unknown>(options: CustomQueryOptions<T>) {
   const [rows, fields] = await pool.query<QueryResult<K[]>>(options);
-  return rows;
+  return rows as K[];
 }

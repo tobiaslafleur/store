@@ -3,6 +3,7 @@ import { ValidatedRequest } from '@store/types';
 import { CreateUserInput, GetUserInput } from '@/modules/user.schema';
 import { createUser, getUserById } from '@/modules/user.service';
 import { APIError } from '@/utils/error';
+import { validate } from 'uuid';
 
 export async function createUserHandler(
   request: ValidatedRequest<{ body: CreateUserInput }>,
@@ -16,8 +17,6 @@ export async function createUserHandler(
 
     response.status(201).send({ ...rest });
   } catch (error: any) {
-    console.log(error);
-
     if (error instanceof APIError) {
       return next(error);
     }
@@ -37,6 +36,15 @@ export async function getUserHandler(
   next: NextFunction
 ) {
   try {
+    const validUUID = validate(request.params.id);
+
+    if (!validUUID) {
+      throw new APIError({
+        code: 'BAD_REQUEST',
+        message: 'Id is not a valid UUID',
+      });
+    }
+
     const user = await getUserById(request.params.id);
 
     if (!user) {

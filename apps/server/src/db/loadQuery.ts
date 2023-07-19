@@ -9,10 +9,10 @@ type Queries = {
   };
 };
 
-export function loadQuery<T extends keyof Queries, Y extends keyof Queries[T]>(
-  folder: T,
-  file: Y & string
-) {
+export function loadQuery<
+  T extends keyof Queries,
+  Y extends keyof Queries[T] & string
+>(folder: T, file: Y) {
   const sql = fs
     .readFileSync(
       path.resolve(__dirname, `./queries/${folder}/${file}.sql`),
