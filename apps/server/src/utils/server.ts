@@ -1,6 +1,7 @@
 import express, { Express } from 'express';
 import cors from 'cors';
 import { pino } from '@/utils/logger';
+import routeHandler from '@/routes';
 import { errorHandler, notFoundHandler } from '@/utils/error';
 
 export default function initializeServer(): Express {
@@ -10,6 +11,8 @@ export default function initializeServer(): Express {
   app.use(cors());
 
   app.use(pino);
+
+  app.use('/api/v1', routeHandler);
 
   app.use(errorHandler);
   app.use(notFoundHandler);

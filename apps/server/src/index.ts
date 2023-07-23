@@ -2,14 +2,14 @@ import { logger } from '@/utils/logger';
 import initializeServer from '@/utils/server';
 import env from '@/utils/env';
 
+const { HOST, PORT } = env;
+
 function main() {
   const app = initializeServer();
 
   app
-    .listen(env.PORT, function () {
-      logger.info(
-        `Application is listening on http://${env.HOST}:${env.PORT} 🚀`
-      );
+    .listen(PORT, function () {
+      logger.info(`Application is listening on http://${HOST}:${PORT} 🚀`);
     })
     .on('error', function () {
       logger.error('Unable to start application, shutting down ❌');

@@ -24,12 +24,18 @@ const HTTP_ERROR_MESSAGES: Record<HTTP_TYPES, string> = {
 
 type HTTP_TYPES = keyof typeof HTTP_CODES;
 
-export class APIError extends Error {
+export class HTTPError extends Error {
   public readonly code;
   public readonly statusCode;
   public readonly errorMessage;
 
-  constructor({ code, message }: { code: HTTP_TYPES; message: string }) {
+  constructor({
+    code,
+    message = 'Something went wrong',
+  }: {
+    code: HTTP_TYPES;
+    message?: string;
+  }) {
     super(message);
 
     this.code = code;
@@ -44,7 +50,7 @@ export function errorHandler(
   response: Response,
   next: NextFunction
 ) {
-  if (error instanceof APIError) {
+  if (error instanceof HTTPError) {
     return response.status(error.statusCode).send({
       statusCode: error.statusCode,
       code: error.code,
