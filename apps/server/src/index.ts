@@ -5,11 +5,16 @@ import env from '@/utils/env';
 function main() {
   const app = initializeServer();
 
-  app.listen(3001, function () {
-    logger.info(
-      `Application is listening on http://${env.HOST}:${env.PORT} 🚀`
-    );
-  });
+  app
+    .listen(env.PORT, function () {
+      logger.info(
+        `Application is listening on http://${env.HOST}:${env.PORT} 🚀`
+      );
+    })
+    .on('error', function () {
+      logger.error('Unable to start application, shutting down ❌');
+      process.exit(1);
+    });
 }
 
 main();
