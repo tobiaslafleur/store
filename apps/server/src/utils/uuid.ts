@@ -24,15 +24,12 @@ function toUUIDFromBinary(binary: Buffer): string {
 export const uuid = customType<{
   data: string;
   driverData: Buffer;
-  default: true;
 }>({
   dataType() {
     return 'binary(16)';
   },
-  toDriver(): Buffer {
-    const uuid = randomUUID();
-
-    const binary = toBinaryFromUUID(uuid);
+  toDriver(value): Buffer {
+    const binary = toBinaryFromUUID(value);
 
     return binary;
   },

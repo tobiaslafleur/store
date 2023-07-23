@@ -1,6 +1,10 @@
 import { HTTPError } from '@/utils/error';
-import { RequestHandler } from 'express';
-import { ZodError, ZodSchema } from 'zod';
+import type { Request, RequestHandler } from 'express';
+import type { ZodError, ZodSchema } from 'zod';
+
+export type ValidatedRequest<
+  T extends { body?: any; params?: any; query?: any }
+> = Request<T['params'], any, T['body'], T['query']>;
 
 export function validateRequest<TParams, TQuery, TBody>(schemas: {
   params?: ZodSchema<TParams>;

@@ -12,6 +12,7 @@
       "persistent": true
     },
     "drizzle:generate": {},
-    "drizzle:push": {}
+    "drizzle:push": {},
+    "drizzle:studio": {}
   }
 }

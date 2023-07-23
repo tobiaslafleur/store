@@ -7,7 +7,8 @@
     "lint": "eslint --ext .ts",
     "build": "tsc --build",
     "drizzle:generate": "drizzle-kit generate:mysql",
-    "drizzle:push": "drizzle-kit push:mysql"
+    "drizzle:push": "drizzle-kit push:mysql",
+    "drizzle:studio": "drizzle-kit studio --port 3333"
   },
   "devDependencies": {
     "@types/cors": "^2.8.13",
@@ -20,11 +21,11 @@
     "typescript": "^4.5.3"
   },
   "dependencies": {
+    "argon2": "^0.30.3",
     "cors": "^2.8.5",
     "date-fns": "^2.30.0",
     "dotenv": "^16.3.1",
     "drizzle-orm": "^0.27.2",
-    "drizzle-zod": "^0.4.4",
     "express": "^4.18.2",
     "mysql2": "^3.5.2",
     "pino-http": "^8.3.3",
