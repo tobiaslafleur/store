@@ -13,6 +13,7 @@ export const users = mysqlTable(
     id: int('id').primaryKey().autoincrement(),
     uuid: uuid('uuid').notNull(),
     email: varchar('email', { length: 255 }).notNull(),
+    password: varchar('password', { length: 255 }).notNull(),
     first_name: varchar('first_name', { length: 35 }).notNull(),
     last_name: varchar('last_name', { length: 35 }).notNull(),
     created_at: timestamp('created_at').notNull().defaultNow(),

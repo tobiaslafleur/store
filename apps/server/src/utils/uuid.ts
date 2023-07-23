@@ -21,7 +21,11 @@ function toUUIDFromBinary(binary: Buffer): string {
   return uuid;
 }
 
-export const uuid = customType<{ data: string; driverData: Buffer }>({
+export const uuid = customType<{
+  data: string;
+  driverData: Buffer;
+  default: true;
+}>({
   dataType() {
     return 'binary(16)';
   },
