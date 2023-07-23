@@ -4,7 +4,9 @@
     "build": "turbo run build",
     "dev": "turbo run dev",
     "lint": "turbo run lint",
-    "format": "prettier --write \"**/*.{ts,tsx,md}\""
+    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
+    "drizzle:generate": "turbo run drizzle:generate",
+    "drizzle:push": "turbo run drizzle:push"
   },
   "devDependencies": {
     "@turbo/gen": "^1.9.7",

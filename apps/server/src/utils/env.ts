@@ -6,7 +6,7 @@ const envSchema = z.object({
   HOST: z.string().ip().default('127.0.0.1'),
   PORT: z.coerce.number().default(3001),
   MYSQL_HOST: z.string().ip(),
-  MYSQL_PORT: z.coerce.number().default(5432),
+  MYSQL_PORT: z.coerce.number().default(3306),
   MYSQL_DATABASE: z.string(),
   MYSQL_USER: z.string(),
   MYSQL_PASSWORD: z.string(),
