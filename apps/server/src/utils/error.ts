@@ -1,4 +1,6 @@
+import { logger } from '@/utils/logger';
 import { NextFunction, Request, Response } from 'express';
+import { MulterError } from 'multer';
 
 const HTTP_CODES = {
   BAD_REQUEST: 400,
@@ -50,6 +52,15 @@ export function errorHandler(
   response: Response,
   next: NextFunction
 ) {
+  if (error instanceof MulterError) {
+    return response.status(HTTP_CODES['BAD_REQUEST']).send({
+      statusCode: HTTP_CODES['BAD_REQUEST'],
+      code: 'INTERNAL_SERVER_ERROR',
+      error: HTTP_ERROR_MESSAGES['BAD_REQUEST'],
+      message: error.message,
+    });
+  }
+
   if (error instanceof HTTPError) {
     return response.status(error.statusCode).send({
       statusCode: error.statusCode,
