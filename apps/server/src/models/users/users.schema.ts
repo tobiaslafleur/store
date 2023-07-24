@@ -1,4 +1,4 @@
-import { userTable } from '@/db/schema';
+import { usersTable } from '@/db/schema';
 import { InferModel } from 'drizzle-orm';
 import z from 'zod';
 
@@ -38,7 +38,7 @@ export const createUserSchema = z
   );
 
 export type CreateUserRequest = z.infer<typeof createUserSchema>;
-export type CreateUser = InferModel<typeof userTable, 'insert'>;
+export type CreateUser = InferModel<typeof usersTable, 'insert'>;
 
 export const getMultipleUsersSchema = z.object({
   limit: z
@@ -49,7 +49,7 @@ export const getMultipleUsersSchema = z.object({
     .min(1)
     .max(50)
     .default(10),
-  page: z
+  offset: z
     .number({
       coerce: true,
       invalid_type_error: 'page must be of type number',

@@ -1,5 +1,5 @@
-import { createUser, getMultipleUsers } from '@/models/user/user.service';
-import { CreateUserRequest, GetMultipleUsers } from './user.schema';
+import { createUser, getMultipleUsers } from '@/models/users/users.service';
+import { CreateUserRequest, GetMultipleUsers } from './users.schema';
 import { ValidatedRequest } from '@/utils/validateRequest';
 import { NextFunction, Response } from 'express';
 import { HTTPError } from '@/utils/error';

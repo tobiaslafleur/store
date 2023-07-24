@@ -1,5 +1,6 @@
 import { Router } from 'express';
-import userRouteHandler from '@/models/user/user.route';
+import userRouteHandler from '@/models/users/users.route';
+import productRouteHandler from '@/models/products/products.route';
 
 const router: Router = Router();
 
@@ -8,6 +9,8 @@ router.use('/healthcheck', function (request, response, next) {
   return response.status(200).send({ status: 'available' });
 });
 
-router.use('/user', userRouteHandler);
+router.use('/users', userRouteHandler);
+
+router.use('/products', productRouteHandler);
 
 export default router;

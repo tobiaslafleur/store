@@ -1,11 +1,11 @@
 import {
   createUserHandler,
   getMultipleUsersHandler,
-} from '@/models/user/user.controller';
+} from '@/models/users/users.controller';
 import {
   createUserSchema,
   getMultipleUsersSchema,
-} from '@/models/user/user.schema';
+} from '@/models/users/users.schema';
 import { validateRequest } from '@/utils/validateRequest';
 import { Router } from 'express';
 

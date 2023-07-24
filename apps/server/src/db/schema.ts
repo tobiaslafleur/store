@@ -1,13 +1,15 @@
 import { uuid } from '@/utils/uuid';
 import {
+  decimal,
   index,
   int,
   mysqlTable,
+  text,
   timestamp,
   varchar,
 } from 'drizzle-orm/mysql-core';
 
-export const userTable = mysqlTable(
+export const usersTable = mysqlTable(
   'users',
   {
     id: int('id').primaryKey().autoincrement(),
@@ -21,8 +23,27 @@ export const userTable = mysqlTable(
   },
   function (table) {
     return {
-      uuid_index: index('uuid_index').on(table.uuid),
-      email_index: index('email_index').on(table.email),
+      uuid_index: index('users_uuid_index').on(table.uuid),
+      email_index: index('users_email_index').on(table.email),
+    };
+  }
+);
+
+export const productsTable = mysqlTable(
+  'products',
+  {
+    id: int('id').primaryKey().autoincrement(),
+    uuid: uuid('uuid').notNull(),
+    sku: varchar('sku', { length: 12 }).unique().notNull(),
+    name: varchar('name', { length: 255 }).notNull(),
+    description: text('description').notNull(),
+    price: decimal('price', { precision: 10, scale: 2 }).notNull(),
+    created_at: timestamp('created_at').notNull().defaultNow(),
+    updated_at: timestamp('updated_at').notNull().defaultNow(),
+  },
+  function (table) {
+    return {
+      uuid_index: index('products_uuid_index').on(table.uuid),
     };
   }
 );
