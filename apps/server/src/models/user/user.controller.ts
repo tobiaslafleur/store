@@ -1,5 +1,5 @@
-import { createUser } from '@/models/user/user.service';
-import { createUserRequest } from './user.schema';
+import { createUser, getMultipleUsers } from '@/models/user/user.service';
+import { CreateUserRequest, GetMultipleUsers } from './user.schema';
 import { ValidatedRequest } from '@/utils/validateRequest';
 import { NextFunction, Response } from 'express';
 import { HTTPError } from '@/utils/error';
@@ -7,7 +7,7 @@ import { randomUUID } from 'crypto';
 import argon2 from 'argon2';
 
 export async function createUserHandler(
-  request: ValidatedRequest<{ body: createUserRequest }>,
+  request: ValidatedRequest<{ body: CreateUserRequest }>,
   response: Response,
   next: NextFunction
 ) {
@@ -22,7 +22,29 @@ export async function createUserHandler(
       uuid: randomUUID(),
     });
 
-    response.status(200).send(user);
+    return response.status(201).send(user);
+  } catch (error: unknown) {
+    if (error instanceof HTTPError) {
+      return next(error);
+    }
+
+    return next(
+      new HTTPError({
+        code: 'INTERNAL_SERVER_ERROR',
+      })
+    );
+  }
+}
+
+export async function getMultipleUsersHandler(
+  request: ValidatedRequest<{ query: GetMultipleUsers }>,
+  response: Response,
+  next: NextFunction
+) {
+  try {
+    const userList = await getMultipleUsers(request.query);
+
+    return response.status(200).send(userList);
   } catch (error: unknown) {
     if (error instanceof HTTPError) {
       return next(error);

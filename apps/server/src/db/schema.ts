@@ -7,7 +7,7 @@ import {
   varchar,
 } from 'drizzle-orm/mysql-core';
 
-export const users = mysqlTable(
+export const userTable = mysqlTable(
   'users',
   {
     id: int('id').primaryKey().autoincrement(),

@@ -1,4 +1,4 @@
-import { users } from '@/db/schema';
+import { userTable } from '@/db/schema';
 import { InferModel } from 'drizzle-orm';
 import z from 'zod';
 
@@ -23,5 +23,13 @@ export const createUserSchema = z
     return val.password === val.confirm_password;
   });
 
-export type createUserRequest = z.infer<typeof createUserSchema>;
-export type createUserType = InferModel<typeof users, 'insert'>;
+export type CreateUserRequest = z.infer<typeof createUserSchema>;
+export type CreateUser = InferModel<typeof userTable, 'insert'>;
+
+// TODO: Add all getMultipleUsers error messages
+export const getMultipleUsersSchema = z.object({
+  limit: z.coerce.number().min(1).max(50).default(10),
+  page: z.coerce.number().min(0).default(0),
+});
+
+export type GetMultipleUsers = z.infer<typeof getMultipleUsersSchema>;

@@ -1,14 +1,14 @@
-import { createUserType } from '@/models/user/user.schema';
+import { CreateUser } from '@/models/user/user.schema';
 import db from '@/db';
-import { users } from '@/db/schema';
+import { userTable } from '@/db/schema';
 import { eq } from 'drizzle-orm';
 import { HTTPError } from '@/utils/error';
 
-export async function createUser(input: createUserType) {
+export async function createUser(input: CreateUser) {
   const userExists = await db
     .select()
-    .from(users)
-    .where(eq(users.email, input.email));
+    .from(userTable)
+    .where(eq(userTable.email, input.email));
 
   if (userExists.length > 0) {
     throw new HTTPError({
@@ -17,19 +17,43 @@ export async function createUser(input: createUserType) {
     });
   }
 
-  const insertResult = await db.insert(users).values(input);
+  const insertResult = await db.insert(userTable).values(input);
 
   const user = await db
     .select({
-      id: users.uuid,
-      email: users.email,
-      first_name: users.first_name,
-      last_name: users.last_name,
-      created_at: users.created_at,
-      updated_at: users.updated_at,
+      id: userTable.uuid,
+      email: userTable.email,
+      first_name: userTable.first_name,
+      last_name: userTable.last_name,
+      created_at: userTable.created_at,
+      updated_at: userTable.updated_at,
     })
-    .from(users)
-    .where(eq(users.id, insertResult[0].insertId));
+    .from(userTable)
+    .where(eq(userTable.id, insertResult[0].insertId));
 
-  return user;
+  return user[0];
+}
+
+export async function getMultipleUsers({
+  limit,
+  page,
+}: {
+  limit: number;
+  page: number;
+}) {
+  const userList = await db
+    .select({
+      id: userTable.uuid,
+      email: userTable.email,
+      first_name: userTable.first_name,
+      last_name: userTable.last_name,
+      created_at: userTable.created_at,
+      updated_at: userTable.updated_at,
+    })
+    .from(userTable)
+    .limit(limit)
+    .offset(limit * page)
+    .orderBy(userTable.id);
+
+  return userList;
 }
