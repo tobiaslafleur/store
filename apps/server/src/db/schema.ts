@@ -38,12 +38,29 @@ export const productsTable = mysqlTable(
     name: varchar('name', { length: 255 }).notNull(),
     description: text('description').notNull(),
     price: decimal('price', { precision: 10, scale: 2 }).notNull(),
+    image: varchar('image', { length: 255 }),
     created_at: timestamp('created_at').notNull().defaultNow(),
     updated_at: timestamp('updated_at').notNull().defaultNow(),
   },
   function (table) {
     return {
       uuid_index: index('products_uuid_index').on(table.uuid),
+    };
+  }
+);
+
+export const productImagesTable = mysqlTable(
+  'product_images',
+  {
+    id: int('id').primaryKey().autoincrement(),
+    product_id: int('product_id')
+      .notNull()
+      .references(() => productsTable.id),
+    url: varchar('url', { length: 255 }).notNull(),
+  },
+  function (table) {
+    return {
+      product_id_index: index('product_id_index').on(table.product_id),
     };
   }
 );

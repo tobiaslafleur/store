@@ -10,7 +10,7 @@ declare module 'http' {
 export const pino = pinoLogger({
   enabled: true,
   timestamp: false,
-  customSuccessMessage(request, response, responseTime) {
+  customSuccessMessage: (request, response, responseTime) => {
     return `${format(Date.now(), 'yyyy-MM-dd HH:mm:ss')} HTTP/${
       request.httpVersion
     } ${request.method} ${request.originalUrl} ${

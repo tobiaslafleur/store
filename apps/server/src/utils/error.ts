@@ -1,4 +1,3 @@
-import { logger } from '@/utils/logger';
 import { NextFunction, Request, Response } from 'express';
 import { MulterError } from 'multer';
 
