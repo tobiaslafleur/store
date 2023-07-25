@@ -3,7 +3,12 @@ import type { Request, RequestHandler } from 'express';
 import type { ZodError, ZodSchema } from 'zod';
 
 export type ValidatedRequest<
-  T extends { body?: any; params?: any; query?: any }
+  T extends {
+    body?: any;
+    params?: any;
+    query?: any;
+    files?: any;
+  }
 > = Request<T['params'], any, T['body'], T['query']>;
 
 export function validateRequest<TParams, TQuery, TBody>(schemas: {

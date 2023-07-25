@@ -23,10 +23,13 @@ export async function createProductHandler(
       ...input,
       price: String(price),
       uuid: randomUUID(),
+      image: '',
     });
 
     return response.status(201).send(product);
   } catch (error: unknown) {
+    console.log(error);
+
     return next(new HTTPError({ code: 'INTERNAL_SERVER_ERROR' }));
   }
 }

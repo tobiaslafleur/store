@@ -29,6 +29,13 @@
       "when": 1690219034826,
       "tag": "0003_thick_vision",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "5",
+      "when": 1690243892981,
+      "tag": "0004_short_nomad",
+      "breakpoints": true
     }
   ]
 }

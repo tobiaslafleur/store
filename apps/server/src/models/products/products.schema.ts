@@ -22,6 +22,7 @@ export const createProductSchema = z.object({
     .max(65535, { message: 'description is too long' }),
   price: z
     .number({
+      coerce: true,
       required_error: 'price is required',
       invalid_type_error: 'price must be of type number',
     })
