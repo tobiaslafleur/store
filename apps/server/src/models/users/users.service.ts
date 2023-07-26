@@ -1,14 +1,14 @@
 import { CreateUser } from '@/models/users/users.schema';
 import db from '@/db';
-import { usersTable } from '@/db/schema';
+import { users } from '@/db/schema';
 import { eq } from 'drizzle-orm';
 import { HTTPError } from '@/utils/error';
 
 export async function createUser(input: CreateUser) {
   const userExists = await db
     .select()
-    .from(usersTable)
-    .where(eq(usersTable.email, input.email));
+    .from(users)
+    .where(eq(users.email, input.email));
 
   if (userExists.length > 0) {
     throw new HTTPError({
@@ -17,19 +17,19 @@ export async function createUser(input: CreateUser) {
     });
   }
 
-  const insertResult = await db.insert(usersTable).values(input);
+  const insertResult = await db.insert(users).values(input);
 
   const user = await db
     .select({
-      id: usersTable.uuid,
-      email: usersTable.email,
-      first_name: usersTable.first_name,
-      last_name: usersTable.last_name,
-      created_at: usersTable.created_at,
-      updated_at: usersTable.updated_at,
+      id: users.uuid,
+      email: users.email,
+      first_name: users.first_name,
+      last_name: users.last_name,
+      created_at: users.created_at,
+      updated_at: users.updated_at,
     })
-    .from(usersTable)
-    .where(eq(usersTable.id, insertResult[0].insertId));
+    .from(users)
+    .where(eq(users.id, insertResult[0].insertId));
 
   return user[0];
 }
@@ -43,17 +43,17 @@ export async function getMultipleUsers({
 }) {
   const userList = await db
     .select({
-      id: usersTable.uuid,
-      email: usersTable.email,
-      first_name: usersTable.first_name,
-      last_name: usersTable.last_name,
-      created_at: usersTable.created_at,
-      updated_at: usersTable.updated_at,
+      id: users.uuid,
+      email: users.email,
+      first_name: users.first_name,
+      last_name: users.last_name,
+      created_at: users.created_at,
+      updated_at: users.updated_at,
     })
-    .from(usersTable)
+    .from(users)
     .limit(limit)
     .offset(limit * offset)
-    .orderBy(usersTable.id);
+    .orderBy(users.id);
 
   return userList;
 }

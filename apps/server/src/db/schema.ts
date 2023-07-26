@@ -1,4 +1,5 @@
 import { uuid } from '@/utils/uuid';
+import { relations } from 'drizzle-orm';
 import {
   decimal,
   index,
@@ -9,7 +10,7 @@ import {
   varchar,
 } from 'drizzle-orm/mysql-core';
 
-export const usersTable = mysqlTable(
+export const users = mysqlTable(
   'users',
   {
     id: int('id').primaryKey().autoincrement(),
@@ -29,7 +30,7 @@ export const usersTable = mysqlTable(
   }
 );
 
-export const productsTable = mysqlTable(
+export const products = mysqlTable(
   'products',
   {
     id: int('id').primaryKey().autoincrement(),
@@ -49,13 +50,17 @@ export const productsTable = mysqlTable(
   }
 );
 
-export const productImagesTable = mysqlTable(
+export const productsRelations = relations(products, ({ many }) => ({
+  images: many(product_images),
+}));
+
+export const product_images = mysqlTable(
   'product_images',
   {
     id: int('id').primaryKey().autoincrement(),
     product_id: int('product_id')
       .notNull()
-      .references(() => productsTable.id),
+      .references(() => products.id),
     url: varchar('url', { length: 255 }).notNull(),
   },
   function (table) {
@@ -64,3 +69,10 @@ export const productImagesTable = mysqlTable(
     };
   }
 );
+
+export const productImagesRelations = relations(product_images, ({ one }) => ({
+  product: one(products, {
+    fields: [product_images.product_id],
+    references: [products.id],
+  }),
+}));

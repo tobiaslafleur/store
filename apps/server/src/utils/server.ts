@@ -12,6 +12,8 @@ export default function initializeServer(): Express {
   app.use(express.json());
   app.use(cors());
 
+  app.use('/images', express.static('images'));
+
   app.use('/api/v1', routeHandler);
 
   app.use(errorHandler);

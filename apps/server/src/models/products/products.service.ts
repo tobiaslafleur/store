@@ -1,25 +1,31 @@
 import db from '@/db';
-import { productsTable } from '@/db/schema';
+import { product_images, products } from '@/db/schema';
 import { CreateProduct } from '@/models/products/products.schema';
-import { asc, eq } from 'drizzle-orm';
+import { asc, eq, sql } from 'drizzle-orm';
 
 export async function createProduct(input: CreateProduct) {
-  const insertResult = await db.insert(productsTable).values(input);
+  const insertResult = await db.insert(products).values(input);
 
   const productList = await db
-    .select({
-      id: productsTable.uuid,
-      sku: productsTable.sku,
-      name: productsTable.name,
-      description: productsTable.description,
-      price: productsTable.price,
-      created_at: productsTable.created_at,
-      updated_at: productsTable.updated_at,
-    })
-    .from(productsTable)
-    .where(eq(productsTable.id, insertResult[0].insertId));
+    .select()
+    .from(products)
+    .where(eq(products.id, insertResult[0].insertId));
 
   return productList[0];
+}
+
+export async function insertImagesIntoDB({
+  images,
+  id,
+}: {
+  images: string[];
+  id: number;
+}) {
+  await Promise.all(
+    images.map((img) =>
+      db.insert(product_images).values({ product_id: id, url: img })
+    )
+  );
 }
 
 export async function getMultipleProducts({
@@ -31,18 +37,31 @@ export async function getMultipleProducts({
 }) {
   const productList = await db
     .select({
-      id: productsTable.uuid,
-      sku: productsTable.sku,
-      name: productsTable.name,
-      description: productsTable.description,
-      price: productsTable.price,
-      created_at: productsTable.created_at,
-      updated_at: productsTable.updated_at,
+      id: products.uuid,
+      sku: products.sku,
+      name: products.name,
+      description: products.description,
+      price: products.price,
+      image: products.image,
+      created_at: products.created_at,
+      updated_at: products.updated_at,
     })
-    .from(productsTable)
+    .from(products)
     .limit(limit)
     .offset(limit * offset)
-    .orderBy(asc(productsTable.id));
+    .orderBy(asc(products.id));
+
+  return productList;
+}
+
+export async function getProduct(id: string) {
+  const productList = await db.query.products.findFirst({
+    where: eq(products.uuid, id),
+    with: {
+      images: true,
+    },
+    columns: {},
+  });
 
   return productList;
 }

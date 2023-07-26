@@ -1,6 +1,7 @@
 import {
   createProductHandler,
   getMultipleProductsHandler,
+  getProductHandler,
 } from '@/models/products/products.controller';
 import {
   createProductSchema,
@@ -27,5 +28,7 @@ router.get(
   validateRequest({ query: getMultipleProductsSchema }),
   getMultipleProductsHandler
 );
+
+router.get('/:id', getProductHandler);
 
 export default router;

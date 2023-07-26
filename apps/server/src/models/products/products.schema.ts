@@ -1,4 +1,4 @@
-import { productsTable } from '@/db/schema';
+import { products } from '@/db/schema';
 import { InferModel } from 'drizzle-orm';
 import z from 'zod';
 
@@ -31,7 +31,7 @@ export const createProductSchema = z.object({
 });
 
 export type CreateProductRequest = z.infer<typeof createProductSchema>;
-export type CreateProduct = InferModel<typeof productsTable, 'insert'>;
+export type CreateProduct = InferModel<typeof products, 'insert'>;
 
 export const getMultipleProductsSchema = z.object({
   limit: z
