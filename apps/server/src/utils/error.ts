@@ -1,4 +1,3 @@
-import { logger } from '@/utils/logger';
 import { NextFunction, Request, Response } from 'express';
 import { MulterError } from 'multer';
 
@@ -52,8 +51,6 @@ export function errorHandler(
   response: Response,
   next: NextFunction
 ) {
-  logger.error(error);
-
   if (error instanceof MulterError) {
     return response.status(HTTP_CODES['BAD_REQUEST']).send({
       statusCode: HTTP_CODES['BAD_REQUEST'],

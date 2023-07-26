@@ -5,6 +5,8 @@ import { NextFunction, Response } from 'express';
 import { HTTPError } from '@/utils/error';
 import { randomUUID } from 'crypto';
 import argon2 from 'argon2';
+import { toBinaryFromUUID } from '@/utils/uuid';
+import { Prisma } from '@prisma/client';
 
 export async function createUserHandler(
   request: ValidatedRequest<{ body: CreateUserRequest }>,
@@ -19,13 +21,20 @@ export async function createUserHandler(
 
     const user = await createUser({
       ...input,
-      uuid: randomUUID(),
+      uuid: toBinaryFromUUID(randomUUID()),
     });
 
     return response.status(201).send(user);
   } catch (error: unknown) {
-    if (error instanceof HTTPError) {
-      return next(error);
+    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+      if (error.code === 'P2002') {
+        return next(
+          new HTTPError({
+            code: 'CONFLICT',
+            message: 'Email is already in use',
+          })
+        );
+      }
     }
 
     return next(

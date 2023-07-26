@@ -6,30 +6,28 @@
     "dev": "tsx watch --clear-screen=false src/index.ts",
     "lint": "eslint --ext .ts",
     "build": "tsc --build",
-    "drizzle:generate": "drizzle-kit generate:mysql",
-    "drizzle:push": "drizzle-kit push:mysql",
-    "drizzle:studio": "drizzle-kit studio --port 3333"
+    "prisma:generate": "npx prisma generate",
+    "prisma:migrate": "npx prisma migrate dev"
   },
   "devDependencies": {
     "@types/cors": "^2.8.13",
     "@types/express": "^4.17.17",
     "@types/multer": "^1.4.7",
     "@types/node": "^17.0.12",
-    "drizzle-kit": "^0.19.10",
     "eslint-config-custom": "workspace:*",
+    "prisma": "^5.0.0",
     "tsconfig": "workspace:*",
     "tsx": "^3.12.7",
     "typescript": "^4.5.3"
   },
   "dependencies": {
+    "@prisma/client": "5.0.0",
     "argon2": "^0.30.3",
     "cors": "^2.8.5",
     "date-fns": "^2.30.0",
     "dotenv": "^16.3.1",
-    "drizzle-orm": "^0.27.2",
     "express": "^4.18.2",
     "multer": "1.4.5-lts.1",
-    "mysql2": "^3.5.2",
     "pino-http": "^8.3.3",
     "pino-pretty": "^10.1.0",
     "zod": "^3.21.4"

@@ -1,0 +1,45 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model product_images {
+  id         Int      @id @default(autoincrement())
+  product_id Bytes    @db.Binary(16)
+  url        String   
+  product    products @relation(fields: [product_id], references: [uuid], onDelete: Cascade)
+
+  @@index([product_id])
+}
+
+model products {
+  id             Int              @id @default(autoincrement())
+  uuid           Bytes            @unique @db.Binary(16)
+  sku            String           @unique @db.VarChar(12)
+  name           String           
+  description    String           @db.Text
+  price          Decimal          @db.Decimal(10, 2)
+  created_at     DateTime         @default(now()) @db.Timestamp(0)
+  updated_at     DateTime         @default(now()) @db.Timestamp(0)
+  image          String           
+  product_images product_images[]
+
+  @@index([uuid])
+}
+
+model users {
+  id         Int      @id @default(autoincrement())
+  uuid       Bytes    @unique @db.Binary(16)
+  email      String   @unique 
+  first_name String   
+  last_name  String   
+  created_at DateTime @default(now()) @db.Timestamp(0)
+  updated_at DateTime @default(now()) @db.Timestamp(0)
+  password   String   
+
+  @@index([email, uuid])
+}

@@ -6,11 +6,13 @@ import {
   createProduct,
   getMultipleProducts,
   getProduct,
-  insertImagesIntoDB,
+  insertImagesForProduct,
 } from '@/models/products/products.service';
 import { HTTPError } from '@/utils/error';
 import { validateMulter } from '@/utils/multer';
+import { toBinaryFromUUID } from '@/utils/uuid';
 import { ValidatedRequest } from '@/utils/validateRequest';
+import { Prisma } from '@prisma/client';
 import { randomUUID } from 'crypto';
 import { NextFunction, Request, Response } from 'express';
 
@@ -25,28 +27,40 @@ export async function createProductHandler(
       ['product_image', 'image_gallery']
     >(request.files);
 
-    const productImagePath =
-      product_image[0].destination + product_image[0].filename;
-    const imageGalleryPaths = image_gallery.map(
+    const productImagePath = product_image.map(
       (img) => img.destination + img.filename
     );
 
-    const { price, ...input } = request.body;
-
     const product = await createProduct({
-      ...input,
-      price: String(price),
-      uuid: randomUUID(),
-      image: productImagePath,
+      ...request.body,
+      price: String(request.body.price),
+      uuid: toBinaryFromUUID(randomUUID()),
+      image: productImagePath[0],
     });
 
-    const { id, uuid, ...rest } = product;
+    const imageGalleryPaths = image_gallery.map((img) => ({
+      url: img.destination + img.filename,
+      product_id: toBinaryFromUUID(product.id),
+    }));
 
-    await insertImagesIntoDB({ images: imageGalleryPaths, id });
+    await insertImagesForProduct(imageGalleryPaths);
 
-    return response.status(201).send({ ...rest, id: uuid });
+    return response.status(201).send({ product });
   } catch (error: unknown) {
-    console.log(error);
+    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+      if (error.code === 'P2002') {
+        return next(
+          new HTTPError({
+            code: 'CONFLICT',
+            message: 'Product SKU is already in use',
+          })
+        );
+      }
+    }
+
+    if (error instanceof HTTPError) {
+      return next(error);
+    }
 
     return next(new HTTPError({ code: 'INTERNAL_SERVER_ERROR' }));
   }
@@ -72,9 +86,7 @@ export async function getProductHandler(
   next: NextFunction
 ) {
   try {
-    const result = await getProduct(request.params.id);
-
-    console.log(result);
+    const result = await getProduct(toBinaryFromUUID(request.params.id));
 
     response.status(200).send(result);
   } catch (error: unknown) {

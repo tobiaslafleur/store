@@ -1,5 +1,3 @@
-import { users } from '@/db/schema';
-import { InferModel } from 'drizzle-orm';
 import z from 'zod';
 
 export const createUserSchema = z
@@ -38,7 +36,6 @@ export const createUserSchema = z
   );
 
 export type CreateUserRequest = z.infer<typeof createUserSchema>;
-export type CreateUser = InferModel<typeof users, 'insert'>;
 
 export const getMultipleUsersSchema = z.object({
   limit: z

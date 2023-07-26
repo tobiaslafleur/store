@@ -1,12 +1,10 @@
-import { customType } from 'drizzle-orm/mysql-core';
-
-function toBinaryFromUUID(uuid: string): Buffer {
+export function toBinaryFromUUID(uuid: string): Buffer {
   const removeDashesFromUUID = uuid.replace(/-/g, '');
 
   return Buffer.from(removeDashesFromUUID, 'hex');
 }
 
-function toUUIDFromBinary(binary: Buffer): string {
+export function toUUIDFromBinary(binary: Buffer): string {
   return [
     binary.toString('hex', 0, 4),
     binary.toString('hex', 4, 6),
@@ -15,12 +13,3 @@ function toUUIDFromBinary(binary: Buffer): string {
     binary.toString('hex', 10, 16),
   ].join('-');
 }
-
-export const uuid = customType<{
-  data: string;
-  driverData: Buffer;
-}>({
-  dataType: () => 'binary(16)',
-  toDriver: (value): Buffer => toBinaryFromUUID(value),
-  fromDriver: (value): string => toUUIDFromBinary(value),
-});

@@ -1,37 +1,23 @@
-import { CreateUser } from '@/models/users/users.schema';
-import db from '@/db';
-import { users } from '@/db/schema';
-import { eq } from 'drizzle-orm';
-import { HTTPError } from '@/utils/error';
+import { prisma } from '@/utils/db';
+import { toUUIDFromBinary } from '@/utils/uuid';
+import { Prisma } from '@prisma/client';
 
-export async function createUser(input: CreateUser) {
-  const userExists = await db
-    .select()
-    .from(users)
-    .where(eq(users.email, input.email));
-
-  if (userExists.length > 0) {
-    throw new HTTPError({
-      code: 'CONFLICT',
-      message: 'Email is already in use',
-    });
-  }
-
-  const insertResult = await db.insert(users).values(input);
-
-  const user = await db
-    .select({
-      id: users.uuid,
-      email: users.email,
-      first_name: users.first_name,
-      last_name: users.last_name,
-      created_at: users.created_at,
-      updated_at: users.updated_at,
+export async function createUser(input: Prisma.usersCreateInput) {
+  const user = await prisma.users
+    .create({
+      data: input,
+      select: {
+        uuid: true,
+        email: true,
+        first_name: true,
+        last_name: true,
+        created_at: true,
+        updated_at: true,
+      },
     })
-    .from(users)
-    .where(eq(users.id, insertResult[0].insertId));
+    .then(({ uuid, ...rest }) => ({ id: toUUIDFromBinary(uuid), ...rest }));
 
-  return user[0];
+  return user;
 }
 
 export async function getMultipleUsers({
@@ -41,19 +27,25 @@ export async function getMultipleUsers({
   limit: number;
   offset: number;
 }) {
-  const userList = await db
-    .select({
-      id: users.uuid,
-      email: users.email,
-      first_name: users.first_name,
-      last_name: users.last_name,
-      created_at: users.created_at,
-      updated_at: users.updated_at,
+  const users = await prisma.users
+    .findMany({
+      take: limit,
+      skip: limit * offset,
+      select: {
+        uuid: true,
+        email: true,
+        first_name: true,
+        last_name: true,
+        created_at: true,
+        updated_at: true,
+      },
     })
-    .from(users)
-    .limit(limit)
-    .offset(limit * offset)
-    .orderBy(users.id);
+    .then((users) =>
+      users.map(({ uuid, ...rest }) => ({
+        id: toUUIDFromBinary(uuid),
+        ...rest,
+      }))
+    );
 
-  return userList;
+  return users;
 }

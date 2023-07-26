@@ -5,9 +5,8 @@
     "dev": "turbo run dev",
     "lint": "turbo run lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
-    "drizzle:generate": "turbo run drizzle:generate",
-    "drizzle:push": "turbo run drizzle:push",
-    "drizzle:studio": "turbo run drizzle:studio"
+    "prisma:generate": "turbo run prisma:generate",
+    "prisma:migrate": "turbo run prisma:migrate"
   },
   "devDependencies": {
     "@turbo/gen": "^1.9.7",

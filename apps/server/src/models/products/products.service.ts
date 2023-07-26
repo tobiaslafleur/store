@@ -1,31 +1,35 @@
-import db from '@/db';
-import { product_images, products } from '@/db/schema';
-import { CreateProduct } from '@/models/products/products.schema';
-import { asc, eq, sql } from 'drizzle-orm';
+import { prisma } from '@/utils/db';
+import { toUUIDFromBinary } from '@/utils/uuid';
+import { Prisma } from '@prisma/client';
 
-export async function createProduct(input: CreateProduct) {
-  const insertResult = await db.insert(products).values(input);
+export async function createProduct(input: Prisma.productsCreateInput) {
+  const product = await prisma.products
+    .create({
+      data: input,
+      select: {
+        uuid: true,
+        sku: true,
+        name: true,
+        price: true,
+        description: true,
+        image: true,
+        created_at: true,
+        updated_at: true,
+      },
+    })
+    .then(({ uuid, ...rest }) => ({ id: toUUIDFromBinary(uuid), ...rest }));
 
-  const productList = await db
-    .select()
-    .from(products)
-    .where(eq(products.id, insertResult[0].insertId));
-
-  return productList[0];
+  return product;
 }
 
-export async function insertImagesIntoDB({
-  images,
-  id,
-}: {
-  images: string[];
-  id: number;
-}) {
-  await Promise.all(
-    images.map((img) =>
-      db.insert(product_images).values({ product_id: id, url: img })
-    )
-  );
+export async function insertImagesForProduct(
+  input:
+    | Prisma.product_imagesCreateManyInput
+    | Prisma.product_imagesCreateManyInput[]
+) {
+  await prisma.product_images.createMany({
+    data: input,
+  });
 }
 
 export async function getMultipleProducts({
@@ -35,33 +39,58 @@ export async function getMultipleProducts({
   limit: number;
   offset: number;
 }) {
-  const productList = await db
-    .select({
-      id: products.uuid,
-      sku: products.sku,
-      name: products.name,
-      description: products.description,
-      price: products.price,
-      image: products.image,
-      created_at: products.created_at,
-      updated_at: products.updated_at,
+  const products = await prisma.products
+    .findMany({
+      select: {
+        uuid: true,
+        sku: true,
+        name: true,
+        price: true,
+        description: true,
+        image: true,
+        created_at: true,
+        updated_at: true,
+      },
+      take: limit,
+      skip: limit * offset,
     })
-    .from(products)
-    .limit(limit)
-    .offset(limit * offset)
-    .orderBy(asc(products.id));
+    .then((products) =>
+      products.map(({ uuid, ...rest }) => ({
+        id: toUUIDFromBinary(uuid),
+        ...rest,
+      }))
+    );
 
-  return productList;
+  return products;
 }
 
-export async function getProduct(id: string) {
-  const productList = await db.query.products.findFirst({
-    where: eq(products.uuid, id),
-    with: {
-      images: true,
-    },
-    columns: {},
-  });
+export async function getProduct(id: Buffer) {
+  const product = await prisma.products
+    .findFirstOrThrow({
+      select: {
+        uuid: true,
+        sku: true,
+        name: true,
+        price: true,
+        description: true,
+        image: true,
+        created_at: true,
+        updated_at: true,
+        product_images: {
+          select: {
+            url: true,
+          },
+        },
+      },
+      where: {
+        uuid: id,
+      },
+    })
+    .then(({ uuid, product_images, ...rest }) => ({
+      id: toUUIDFromBinary(uuid),
+      ...rest,
+      product_images: product_images.map((img) => img.url),
+    }));
 
-  return productList;
+  return product;
 }

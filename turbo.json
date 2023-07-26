@@ -11,8 +11,7 @@
       "cache": false,
       "persistent": true
     },
-    "drizzle:generate": {},
-    "drizzle:push": {},
-    "drizzle:studio": {}
+    "prisma:generate": {},
+    "prisma:migrate": {}
   }
 }
